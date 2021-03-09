@@ -7,6 +7,7 @@
 using namespace std;
 vector<int> numbers;
 
+
 void GenerateDataset(const string& filename, const int num)
 {
 	std::ofstream my_file(filename);
@@ -21,25 +22,8 @@ void GenerateDataset(const string& filename, const int num)
 		my_file<<std::endl;
 	}
 	my_file.close();
-	std::cout << "File generated" << std::endl;
 }
 
-void bubble_sort(vector<int> data)
-{
-	auto swapp = true;
-	while (swapp) {
-		swapp = false;
-		for (size_t i = 0; i < data.size() - 1; i++) {
-			if (data[i] > data[i + 1]) {
-				data[i] += data[i + 1];
-				data[i + 1] = data[i] - data[i + 1];
-				data[i] -= data[i + 1];
-				swapp = true;
-			}
-		}
-	}
-	std::cout << "Vector sorted" << std::endl;
-}
 string rename_file_to_sort (string filename)
 {
 	const string sorted = ".sort";
@@ -61,8 +45,23 @@ int SortDataset (string filename)
 	filename = rename_file_to_sort(filename);
 	std::ofstream my_file_write(filename);
 	
-	bubble_sort(numbers);
-	
+	auto pass = false;
+	double temp_sort;
+	auto compares = 0;
+
+	while (!pass) {
+		pass = true;
+		for (auto i = 0; i < numbers.size() - 1; i++) {
+			if (numbers[i] > numbers[i + 1]) {
+				pass = false;
+				temp_sort = numbers[i];
+				numbers[i] = numbers[i + 1];
+				numbers[i + 1] = temp_sort;
+				compares++;
+			}
+		}
+	}
+	std::cout << "vector sorted" << std::endl;
 	
 	for(auto number: numbers)
 	{
@@ -70,13 +69,15 @@ int SortDataset (string filename)
 		my_file_write << std::endl;
 	}
 	my_file_write.close();
-	return 0;
+	
+	return compares;
 	
 }
 
 
 int main()
 {
+	auto number_of_compares=0;
 	const string path_to_file = "C:/Users/mksh2/source/repos/LR2-3/1/";
 	string file_name;
 	auto number_of_lines = 0;
@@ -88,7 +89,14 @@ int main()
 
 	std::cout << "Input number of lines in a file" << std::endl;
 	std::cin >> number_of_lines;
+
+	if (number_of_lines<=0)
+	{
+		std::cout << "Number of lines cannot be below 0" << std::endl;
+		return 0;
+	}
 	GenerateDataset(full_file_name, number_of_lines);
-	SortDataset(full_file_name);
+	number_of_compares=SortDataset(full_file_name);
+	std::cout << "Number of compares: "<<number_of_compares << std::endl;
 	
 }
